@@ -22,7 +22,7 @@ RUN set -eux; \
 	chmod +x /usr/bin/caddy; \
 	caddy version
 
-FROM gcr.io/distroless/base-debian11:nonroot
+FROM gcr.io/distroless/static-debian11:nonroot
 
 LABEL org.opencontainers.image.title=lab-caddy
 LABEL org.opencontainers.image.description="Preconfigured Caddy instance for my own homelab"
