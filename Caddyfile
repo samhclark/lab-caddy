@@ -1,0 +1,9 @@
+{
+	http_port 8080
+	https_port 4443
+	admin off
+}
+:8080 {
+	root * /usr/share/caddy
+	file_server
+}
