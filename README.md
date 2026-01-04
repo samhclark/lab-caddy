@@ -1,31 +1,37 @@
 # lab-caddy
-OCI container image for my home lab's reverse proxy, Caddy. 
 
-The idea here is to make it small and rootless.
-This is done a few ways:
+Prebuilt Caddy container image with the Cloudflare DNS-01 module baked in. This exists so other projects (notably `../custom-coreos`) can pull a known-good image instead of building `xcaddy` at boot.
 
-1. Uses Google's Distroless image as its base
-2. Uses a non-root user (named `nonroot`) 
-3. Uses unpriveliged HTTP(S) ports
+## Image
 
-That last part means that the container won't need to run with root either.
-Access to the ports will be done with the host machine's firewall, which already has root.
-That is to say, the firewall will redirect `$if_inet:{80,443}` to `127.0.0.1:{8080,4443}`.
+- Registry: `ghcr.io/samhclark/lab-caddy`
+- Tag format: `<caddy-version>-cf-<cloudflare-version>`
+- Example: `ghcr.io/samhclark/lab-caddy:2.11-cf-0.2.2`
 
-So, running this container in rootless Podman it starts listening on 8080.
-It happens to be running on a host using firewalld. 
-Running this following command sets up the port redirecting:
+## Versions
 
+Pinned versions and digests live in `Containerfile`:
+
+- `ARG CADDY_VERSION`
+- `ARG CLOUDFLARE_VERSION`
+- `FROM ...@sha256:` digests
+
+When bumping versions, update the ARGs and the digests together.
+
+## Local build
+
+```bash
+just build
 ```
-# firewall-cmd --zone=public --add-forward-port=port=80:proto=tcp:toport=8080
+
+Quick build test (builds then removes the image):
+
+```bash
+just test-build
 ```
 
-Note that there's no final `:toaddr=<ip>` and that we didn't need to enable masquerading.
-Then it works! 
-Request to port 80 get redirected to Caddy, everything happy and working without root.
+## CI/CD
 
-The command to start the container, for my own future reference was:
+GitHub Actions builds, pushes, attests, and signs the image on a weekly schedule and on manual dispatch.
 
-```
-$ podman run -i -t -p 8080:8080 ghcr.io/samhclark/lab-caddy:latest
-```
+Cleanup workflow prunes old GHCR image versions on a weekly schedule (manual trigger defaults to dry-run).
