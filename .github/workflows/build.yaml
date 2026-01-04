@@ -64,7 +64,7 @@ jobs:
           push-to-registry: true
 
       - name: Sign the published OCI image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' && secrets.cosign_private_key != '' && secrets.cosign_password != '' }}
         env:
           digest: ${{ steps.push.outputs.digest }}
           fully_qualified_image_names_json: ${{ steps.push.outputs.registry-paths }}
