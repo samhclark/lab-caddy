@@ -70,7 +70,7 @@ jobs:
 
           echo "Versions older than ${{ env.RETENTION_DAYS }} days:"
           echo "$versions_json" | jq -r --arg cutoff "$cutoff_date" '
-            .[] | select(.created_at < $cutoff) | "  " + (.metadata.container.tags[0]? // "<untagged>") + " - " + .created_at + " - ID: " + (.id | tostring)'
+            .[] | select(.created_at < $cutoff) | "  " + ((.metadata.container.tags | if length > 0 then join(", ") else "<untagged>" end)) + " - " + .created_at + " - ID: " + (.id | tostring)'
           echo ""
 
           echo "Summary:"
