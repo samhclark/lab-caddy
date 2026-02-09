@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # Note: Keep these versions in sync with Containerfile
   CADDY_VERSION: 2.11
   CLOUDFLARE_VERSION: 0.2.2
   IMAGE_TAG: 2.11-cf-0.2.2
@@ -37,9 +38,6 @@ jobs:
           tags: ${{ env.IMAGE_TAG }}
           containerfiles: |
             ./Containerfile
-          build-args: |
-            CADDY_VERSION=${{ env.CADDY_VERSION }}
-            CLOUDFLARE_VERSION=${{ env.CLOUDFLARE_VERSION }}
 
       - name: Log in to Container Registry
         uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7

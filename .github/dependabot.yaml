@@ -1,0 +1,31 @@
+version: 2
+updates:
+  # Docker dependencies (base images and versions in Containerfile)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "14:00"  # 8:00 AM CST / 9:00 AM CDT
+      timezone: "America/Chicago"
+    labels:
+      - "dependencies"
+      - "docker"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "samhclark"
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "14:00"  # 8:00 AM CST / 9:00 AM CDT
+      timezone: "America/Chicago"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "samhclark"
