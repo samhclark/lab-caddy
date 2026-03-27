@@ -10,8 +10,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   # Note: Keep these versions in sync with Containerfile
   CADDY_VERSION: 2.11
-  CLOUDFLARE_VERSION: 0.2.2
-  IMAGE_TAG: 2.11-cf-0.2.2
+  CLOUDFLARE_VERSION: 0.2.4
+  IMAGE_TAG: 2.11.2-cf-0.2.4
 
 jobs:
   build:
