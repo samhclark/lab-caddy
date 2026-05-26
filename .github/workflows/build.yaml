@@ -26,10 +26,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Install Cosign
-        shell: bash
-        run: ./install-cosign.sh "${{ runner.arch }}" "$RUNNER_TEMP"
-
       - name: Build container image
         id: build
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
@@ -55,20 +51,21 @@ jobs:
           registry: ${{ env.REGISTRY }}
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+          create-storage-record: false
 
       - name: Sign the published OCI image
         if: ${{ github.event_name != 'pull_request' && env.COSIGN_PRIVATE_KEY != '' && env.COSIGN_PASSWORD != '' }}
+        uses: samhclark/cosign-exec-action@v1.0.16
         env:
-          digest: ${{ steps.push.outputs.digest }}
-          fully_qualified_image_names_json: ${{ steps.push.outputs.registry-paths }}
           COSIGN_PASSWORD: ${{ secrets.cosign_password }}
           COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
-        run: >
-          echo "${fully_qualified_image_names_json}"
-          | jq -r '.[]'
-          | xargs -I {} cosign sign --yes --key=env://COSIGN_PRIVATE_KEY "{}@${digest}"
+        with:
+          registry-token: ${{ secrets.GITHUB_TOKEN }}
+          args: >-
+            sign --yes --key=env://COSIGN_PRIVATE_KEY --new-bundle-format=false --use-signing-config=false
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}
