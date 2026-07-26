@@ -1,9 +1,11 @@
-FROM docker.io/library/caddy:2.11.3-builder@sha256:f96a3b748f2ce4e5f6595453615da734b93993b231213fe35d0673893b5613ef AS builder
+FROM docker.io/library/caddy:2.11.4-builder@sha256:198d47eaee306d4d0c38a9960c89ff2c959aa29ad51d3e2dafa3e93ac961782a AS builder
 
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    xcaddy build --with github.com/caddy-dns/cloudflare@v0.2.4
+    xcaddy build \
+        --with github.com/caddy-dns/cloudflare@v0.2.4 \
+        --with github.com/caddyserver/certmagic@v0.25.3
 
-FROM docker.io/library/caddy:2.11.3@sha256:ec18ee54aab3315c22e25f3b2babda73ff8007d39b13b3bd1bfffa2f0444c7d9
+FROM docker.io/library/caddy:2.11.4@sha256:844f60b64e4724a5aa8245e019dace0d3f199f7433ce6c57676cb30a920dbad9
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy

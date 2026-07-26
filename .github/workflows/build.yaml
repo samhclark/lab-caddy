@@ -9,9 +9,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   # Note: Keep these versions in sync with Containerfile
-  CADDY_VERSION: 2.11.3
+  CADDY_VERSION: 2.11.4
   CLOUDFLARE_VERSION: 0.2.4
-  IMAGE_TAG: 2.11.3-cf-0.2.4
+  IMAGE_TAG: 2.11.4-cf-0.2.4
 
 jobs:
   build:
