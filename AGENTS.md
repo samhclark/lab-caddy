@@ -9,14 +9,19 @@ This repo builds a precompiled Caddy container image with the Cloudflare DNS-01 
 ## Key Files
 
 - `Containerfile` - two-stage xcaddy build with pinned digests
-- `Justfile` - local build and workflow helpers
+- `scripts/image-metadata.sh` - shared validation and derived image metadata
+- `Justfile` - local checks, build, and workflow helpers
+- `tests/test_image_metadata.py` - behavioral coverage for the metadata boundary
+- `.github/workflows/check.yaml` - read-only metadata checks on PRs and main
 - `.github/workflows/build.yaml` - build/push/attest/sign on schedule or manual
 - `.github/workflows/cleanup-images.yaml` - GHCR retention cleanup
-- `install-cosign.sh` - pinned cosign build/install helper for CI
+- `.github/dependabot.yaml` - grouped Caddy base-image and GitHub Actions updates
+- `renovate.json` - Cloudflare module updates only
 
 ## Commands
 
 - `just versions` - show pinned versions and tag
+- `just check` - run metadata behavioral tests
 - `just build` - build the image locally
 - `just test-build` - build then remove the test image
 - `just run-workflow` - trigger the build workflow
@@ -25,5 +30,8 @@ This repo builds a precompiled Caddy container image with the Cloudflare DNS-01 
 
 ## Notes
 
-- Update `Containerfile` ARGs and digests together when bumping versions.
+- `Containerfile` is authoritative: update both Caddy `FROM` versions and
+  digests together, or the Cloudflare `--with` pin. Never duplicate versions
+  in the Justfile or workflows; use the shared metadata script.
+- Run `just check` after metadata changes and `just test-build` after build changes.
 - Tag format is `<caddy-version>-cf-<cloudflare-version>`.

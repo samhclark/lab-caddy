@@ -1,34 +1,32 @@
 # just manual: https://github.com/casey/just/#readme
 
-CADDY_VERSION := "2.11.9"
-CLOUDFLARE_VERSION := "0.2.4"
-IMAGE_TAG := CADDY_VERSION + "-cf-" + CLOUDFLARE_VERSION
-
 _default:
     @just --list
 
 versions:
-    @echo "Caddy Version: {{CADDY_VERSION}}"
-    @echo "Cloudflare Plugin Version: {{CLOUDFLARE_VERSION}}"
-    @echo "Image Tag: {{IMAGE_TAG}}"
+    @./scripts/image-metadata.sh
+
+check:
+    @python3 -B -m unittest discover -s tests -v
 
 build:
     #!/usr/bin/env bash
+    set -euo pipefail
+    image_tag="$(./scripts/image-metadata.sh --tag)"
     podman build --rm \
-        --build-arg CADDY_VERSION="{{CADDY_VERSION}}" \
-        --build-arg CLOUDFLARE_VERSION="{{CLOUDFLARE_VERSION}}" \
-        -t "lab-caddy:{{IMAGE_TAG}}" \
+        -t "lab-caddy:${image_tag}" \
         -f Containerfile \
         .
 
 test-build:
     #!/usr/bin/env bash
+    set -euo pipefail
+    ./scripts/image-metadata.sh >/dev/null
     podman build --rm \
-        --build-arg CADDY_VERSION="{{CADDY_VERSION}}" \
-        --build-arg CLOUDFLARE_VERSION="{{CLOUDFLARE_VERSION}}" \
         -t "lab-caddy:test" \
         -f Containerfile \
-        . && podman rmi "lab-caddy:test"
+        .
+    podman rmi "lab-caddy:test"
 
 run-workflow:
     gh workflow run build.yaml
