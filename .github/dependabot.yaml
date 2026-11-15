@@ -3,6 +3,10 @@ updates:
   # Docker dependencies (base images and versions in Containerfile)
   - package-ecosystem: "docker"
     directory: "/"
+    groups:
+      caddy-base-images:
+        patterns:
+          - "*caddy*"
     schedule:
       interval: "weekly"
       day: "saturday"

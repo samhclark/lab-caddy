@@ -1,0 +1,22 @@
+name: Check image metadata
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Test image metadata
+        run: python3 -B -m unittest discover -s tests -v
+
+      - name: Validate build inputs
+        run: ./scripts/image-metadata.sh
