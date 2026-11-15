@@ -1,8 +1,8 @@
 # just manual: https://github.com/casey/just/#readme
 
-CADDY_VERSION := "2.11.4"
+CADDY_VERSION := "2.11.9"
 CLOUDFLARE_VERSION := "0.2.4"
-IMAGE_TAG := "{{CADDY_VERSION}}-cf-{{CLOUDFLARE_VERSION}}"
+IMAGE_TAG := CADDY_VERSION + "-cf-" + CLOUDFLARE_VERSION
 
 _default:
     @just --list
