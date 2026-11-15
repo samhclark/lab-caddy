@@ -3,8 +3,7 @@ FROM docker.io/library/caddy:2.11.9-builder@sha256:345264d8c6b50f44f4a4d507d4e6b
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     xcaddy build \
-        --with github.com/caddy-dns/cloudflare@v0.2.4 \
-        --with github.com/caddyserver/certmagic@v0.25.6
+        --with github.com/caddy-dns/cloudflare@v0.2.4
 
 FROM docker.io/library/caddy:2.11.9@sha256:4e2425f6009577e7c651010f16679c28f7d12df3e7b1914f941a7a3370746b3c
 
