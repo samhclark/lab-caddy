@@ -60,7 +60,7 @@ jobs:
 
       - name: Sign the published OCI image
         if: ${{ github.event_name != 'pull_request' && env.COSIGN_PRIVATE_KEY != '' && env.COSIGN_PASSWORD != '' }}
-        uses: samhclark/cosign-exec-action@v1.0.16
+        uses: samhclark/cosign-exec-action@v1.1.1
         env:
           COSIGN_PASSWORD: ${{ secrets.cosign_password }}
           COSIGN_PRIVATE_KEY: ${{ secrets.cosign_private_key }}
